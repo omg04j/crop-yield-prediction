@@ -1,50 +1,149 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Crop Yield Predictor</title>
+    <meta charset="UTF-8">
+    <title>🌾 Crop Yield Predictor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #e0f7fa, #a7ffeb);
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2e7d32;
+            margin-top: 30px;
+        }
+
+        form {
+            background: white;
+            max-width: 500px;
+            margin: 30px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease-in-out;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        input[type="submit"] {
+            background: #2e7d32;
+            color: white;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out;
+        }
+
+        input[type="submit"]:hover {
+            background: #1b5e20;
+        }
+
+        .result {
+            text-align: center;
+            margin-top: 25px;
+            background: #c8e6c9;
+            padding: 15px;
+            border-radius: 10px;
+            color: #1b5e20;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 600px) {
+            form {
+                padding: 20px;
+                width: 90%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h2>Crop Yield Prediction Form</h2>
+
+    <h2>🌾 Crop Yield Prediction</h2>
+
     <form action="/predict" method="POST">
         <label>Region:</label>
-        <input type="text" name="Region" required><br>
+        <select name="Region" required>
+            <option>North</option>
+            <option>South</option>
+            <option>East</option>
+            <option>West</option>
+        </select>
 
         <label>Soil Type:</label>
-        <input type="text" name="Soil_Type" required><br>
+        <select name="Soil_Type" required>
+            <option>Sandy</option>
+            <option>Clay</option>
+            <option>Loam</option>
+            <option>Silt</option>
+        </select>
 
         <label>Crop:</label>
-        <input type="text" name="Crop" required><br>
+        <select name="Crop" required>
+            <option>Wheat</option>
+            <option>Rice</option>
+            <option>Cotton</option>
+            <option>Barley</option>
+            <option>Soybean</option>
+        </select>
 
         <label>Rainfall (mm):</label>
-        <input type="number" step="0.01" name="Rainfall_mm" required><br>
+        <input type="number" step="0.01" name="Rainfall_mm" required>
 
-        <label>Temperature (Celsius):</label>
-        <input type="number" step="0.01" name="Temperature_Celsius" required><br>
+        <label>Temperature (°C):</label>
+        <input type="number" step="0.01" name="Temperature_Celsius" required>
 
         <label>Fertilizer Used:</label>
-        <select name="Fertilizer_Used">
+        <select name="Fertilizer_Used" required>
             <option value="True">Yes</option>
             <option value="False">No</option>
-        </select><br>
+        </select>
 
         <label>Irrigation Used:</label>
-        <select name="Irrigation_Used">
+        <select name="Irrigation_Used" required>
             <option value="True">Yes</option>
             <option value="False">No</option>
-        </select><br>
+        </select>
 
         <label>Weather Condition:</label>
-        <input type="text" name="Weather_Condition" required><br>
+        <select name="Weather_Condition" required>
+            <option>Sunny</option>
+            <option>Cloudy</option>
+            <option>Rainy</option>
+        </select>
 
         <label>Days to Harvest:</label>
-        <input type="number" name="Days_to_Harvest" required><br>
+        <input type="number" name="Days_to_Harvest" required>
 
-        <button type="submit">Predict</button>
+        <input type="submit" value="🌱 Predict Yield">
     </form>
 
-    {% if prediction_text %}
-    <h3>{{ prediction_text }}</h3>
+    {% if prediction %}
+    <div class="result">
+        📈 Predicted Yield: {{ prediction }} tons/hectare
+    </div>
     {% endif %}
+
 </body>
 </html>
