@@ -1,25 +1,21 @@
 from flask import Flask, render_template, request
 import pickle
-import numpy as np
 import pandas as pd
 
-# ✅ Initialize Flask app
-app = Flask(__name__)
-
-# ✅ Load the trained model
+# Load the trained pipeline model
 with open('best_model.pkl', 'rb') as file:
     model = pickle.load(file)
 
-# ✅ Home route
+app = Flask(__name__)
+
 @app.route('/')
 def home():
     return render_template('index.html')
 
-# ✅ Predict route
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Extract form data
+        # Extract form inputs
         region = request.form['Region']
         soil = request.form['Soil_Type']
         crop = request.form['Crop']
@@ -30,27 +26,28 @@ def predict():
         weather = request.form['Weather_Condition']
         days = int(request.form['Days_to_Harvest'])
 
-        # Convert to DataFrame
-        input_data = {
-            'Region': [region],
-            'Soil_Type': [soil],
-            'Crop': [crop],
-            'Rainfall_mm': [rainfall],
-            'Temperature_Celsius': [temperature],
-            'Fertilizer_Used': [fertilizer],
-            'Irrigation_Used': [irrigation],
-            'Weather_Condition': [weather],
-            'Days_to_Harvest': [days]
-        }
-        input_df = pd.DataFrame(input_data)
+        # Create a DataFrame with the same column names as used in training
+        input_df = pd.DataFrame([{
+            'Region': region,
+            'Soil_Type': soil,
+            'Crop': crop,
+            'Rainfall_mm': rainfall,
+            'Temperature_Celsius': temperature,
+            'Fertilizer_Used': fertilizer,
+            'Irrigation_Used': irrigation,
+            'Weather_Condition': weather,
+            'Days_to_Harvest': days
+        }])
 
-        # Make prediction
-        prediction = model.predict(input_df)
-        return render_template('index.html', prediction_text=f"🌾 Predicted Yield: {prediction[0]:.2f} tons/hectare")
+        # Predict using the loaded pipeline
+        prediction = model.predict(input_df)[0]
+        prediction = round(prediction, 2)
 
+        return render_template('index.html', prediction=f"{prediction} tons/hectare")
+    
     except Exception as e:
-        return render_template('index.html', prediction_text=f"❌ Error: {str(e)}")
+        print("❌ Error during prediction:", e)
+        return render_template('index.html', prediction="Prediction failed. Check logs.")
 
-# ✅ Run the app
 if __name__ == '__main__':
     app.run(debug=True)
